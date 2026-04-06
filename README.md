@@ -2,6 +2,8 @@
 
 This repository is used for the CI/CD module of the Full Stack Open course
 
+## Deployment
+The application is deployed at https://fullstack-ci.onrender.com/
 ## Commands
 
 Start by running `npm install` inside the project folder
