@@ -27,3 +27,4 @@ jobs:
         run: npx playwright test
       - name: Trigger deployment
         run: curl ${{ secrets.RENDER_DEPLOY_HOOK }}
+        if: ${{ github.event_name == 'push' }}
