@@ -32,7 +32,7 @@ jobs:
         if: always()
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
-          nocontext: ${{ success() }}
+          nocontext: ${{ job.status == 'success' }}
           username: Fullstack part 11 Hook
   tag_release:
     needs: [ simple_deployment_pipeline ]
