@@ -34,7 +34,7 @@ jobs:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           nocontext: ${{ job.status == 'success' }}
           username: Fullstack part 11 Hook
-          url: ${{ github.repositoryUrl }}
+          url: https://github.com/EljasV/Fullstack-CI
           description: |
             ${{ format('Hash: {0}', github.sha) }}
   tag_release:
