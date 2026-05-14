@@ -34,6 +34,9 @@ jobs:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           nocontext: ${{ job.status == 'success' }}
           username: Fullstack part 11 Hook
+          url: ${{ github.repositoryUrl }}
+          description: |
+            ${{ format('Hash: {0}', github.sha) }}
   tag_release:
     needs: [ simple_deployment_pipeline ]
     runs-on: ubuntu-latest
