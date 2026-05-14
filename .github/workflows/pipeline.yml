@@ -8,7 +8,7 @@ on:
     types: [ opened, synchronize ]
 
 jobs:
-  simple_deployment_pipeline:
+  build_and_test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -25,20 +25,45 @@ jobs:
         run: npx playwright install --with-deps
       - name: Run Playwright tests
         run: npx playwright test
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [ build_and_test ]
+    steps:
       - name: Trigger deployment
         run: curl ${{ secrets.RENDER_DEPLOY_HOOK }}
         if: ${{ github.event_name == 'push' && (!contains(join(github.event.commits.*.message, ''), '#skip'))}}
+
+  notify_failure:
+    runs-on: ubuntu-latest
+    needs: [ deploy, build_and_test ]
+    if: ${{ !success() }}
+    steps:
       - uses: sarisia/actions-status-discord@v1
         if: ${{ github.event_name == 'push' && (!contains(join(github.event.commits.*.message, ''), '#skip'))}}
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
-          nocontext: ${{ job.status == 'success' }}
           username: Fullstack part 11 Hook
           url: https://github.com/EljasV/Fullstack-CI
           description: |
             ${{ format('Hash: {0}', github.sha) }}
+
+  notify_success:
+    needs: [ deploy ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: sarisia/actions-status-discord@v1
+        if: ${{ github.event_name == 'push' && (!contains(join(github.event.commits.*.message, ''), '#skip'))}}
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          nocontext: true
+          username: Fullstack part 11 Hook
+          url: https://github.com/EljasV/Fullstack-CI
+          description: |
+            ${{ format('Hash: {0}', github.sha) }}
+  
+
   tag_release:
-    needs: [ simple_deployment_pipeline ]
+    needs: [ deploy ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
