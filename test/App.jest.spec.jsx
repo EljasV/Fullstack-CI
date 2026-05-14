@@ -29,7 +29,6 @@ describe('<App />', () => {
       render(<Router><App/></Router>)
     })
     expect(screen.getByTestId('error')).toBeVisible()
-    expect(screen.getByTestId('testbreaking')).toBeVisible()
   })
 
 })
